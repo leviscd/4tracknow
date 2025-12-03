@@ -1,0 +1,235 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* 4Track Futuristic Color System */
+    --background: 270 20% 4%;
+    --foreground: 0 0% 98%;
+
+    --card: 270 15% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 270 15% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    /* Violeta Neon Principal */
+    --primary: 270 100% 65%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Roxo Intenso */
+    --secondary: 280 80% 45%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Lilás Tecnológico */
+    --accent: 275 90% 75%;
+    --accent-foreground: 270 20% 10%;
+
+    --muted: 270 15% 15%;
+    --muted-foreground: 270 10% 60%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 270 30% 20%;
+    --input: 270 20% 15%;
+    --ring: 270 100% 65%;
+
+    --radius: 0.75rem;
+
+    /* 4Track Custom Tokens */
+    --violet-neon: 270 100% 65%;
+    --violet-neon-glow: 270 100% 75%;
+    --purple-deep: 280 80% 30%;
+    --purple-intense: 275 90% 50%;
+    --graphite: 270 10% 12%;
+    --graphite-light: 270 8% 18%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(280 80% 30% / 0.8), hsl(270 20% 4%) 60%);
+    --gradient-card: linear-gradient(145deg, hsl(270 15% 12% / 0.6), hsl(270 15% 6% / 0.8));
+    --gradient-glow: radial-gradient(ellipse at center, hsl(270 100% 65% / 0.15), transparent 70%);
+    --gradient-button: linear-gradient(90deg, hsl(280 80% 45%), hsl(270 100% 65%));
+
+    /* Shadows */
+    --shadow-neon: 0 0 20px hsl(270 100% 65% / 0.4);
+    --shadow-neon-intense: 0 0 40px hsl(270 100% 65% / 0.6);
+    --shadow-card: 0 8px 32px hsl(270 20% 4% / 0.8);
+    --shadow-float: 0 20px 60px hsl(270 20% 4% / 0.6);
+
+    /* Sidebar */
+    --sidebar-background: 270 15% 8%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 270 100% 65%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 270 15% 15%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 270 30% 20%;
+    --sidebar-ring: 270 100% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Orbitron', sans-serif;
+  }
+}
+
+@layer components {
+  /* Glass Card Effect */
+  .glass-card {
+    @apply relative overflow-hidden rounded-xl;
+    background: linear-gradient(145deg, hsl(var(--card) / 0.6), hsl(var(--graphite) / 0.4));
+    backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--violet-neon) / 0.2);
+    box-shadow: var(--shadow-card);
+  }
+
+  .glass-card::before {
+    content: '';
+    @apply absolute inset-0 rounded-xl pointer-events-none;
+    background: linear-gradient(135deg, hsl(var(--violet-neon) / 0.1), transparent 50%);
+  }
+
+  /* Neon Border Effect */
+  .neon-border {
+    @apply relative;
+    border: 1px solid hsl(var(--violet-neon) / 0.4);
+    box-shadow: 
+      inset 0 0 20px hsl(var(--violet-neon) / 0.1),
+      0 0 20px hsl(var(--violet-neon) / 0.2);
+  }
+
+  .neon-border:hover {
+    border-color: hsl(var(--violet-neon) / 0.6);
+    box-shadow: 
+      inset 0 0 30px hsl(var(--violet-neon) / 0.15),
+      0 0 30px hsl(var(--violet-neon) / 0.3);
+  }
+
+  /* Glow Text */
+  .text-glow {
+    text-shadow: 0 0 20px hsl(var(--violet-neon) / 0.6);
+  }
+
+  .text-glow-intense {
+    text-shadow: 
+      0 0 10px hsl(var(--violet-neon) / 0.8),
+      0 0 30px hsl(var(--violet-neon) / 0.6),
+      0 0 60px hsl(var(--violet-neon) / 0.4);
+  }
+
+  /* Scanner Button Effect */
+  .btn-scanner {
+    @apply relative overflow-hidden;
+  }
+
+  .btn-scanner::after {
+    content: '';
+    @apply absolute top-0 left-0 w-full h-full pointer-events-none;
+    background: linear-gradient(90deg, transparent, hsl(var(--violet-neon) / 0.3), transparent);
+    transform: translateX(-100%);
+    animation: scanner 3s ease-in-out infinite;
+  }
+
+  /* Floating Animation */
+  .float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .float-delayed {
+    animation: float 6s ease-in-out infinite;
+    animation-delay: -3s;
+  }
+
+  /* Pulse Glow */
+  .pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+}
+
+@layer utilities {
+  .bg-gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .bg-gradient-card {
+    background: var(--gradient-card);
+  }
+
+  .bg-gradient-glow {
+    background: var(--gradient-glow);
+  }
+
+  .shadow-neon {
+    box-shadow: var(--shadow-neon);
+  }
+
+  .shadow-neon-intense {
+    box-shadow: var(--shadow-neon-intense);
+  }
+}
+
+@keyframes scanner {
+  0% {
+    transform: translateX(-100%);
+  }
+  50%, 100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px hsl(var(--violet-neon) / 0.4);
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(var(--violet-neon) / 0.6);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animate-fade-in-delayed {
+  animation: fadeIn 0.6s ease-out 0.2s forwards;
+  opacity: 0;
+}
+
+.animate-fade-in-delayed-2 {
+  animation: fadeIn 0.6s ease-out 0.4s forwards;
+  opacity: 0;
+}

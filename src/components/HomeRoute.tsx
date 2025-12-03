@@ -1,0 +1,10 @@
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+
+const HomeRoute = ({ children }: { children: React.ReactNode }) => {
+  const token = localStorage.getItem('token');
+
+  return token ? <Navigate to="/dashboard" /> : children;
+};
+
+export default HomeRoute;
