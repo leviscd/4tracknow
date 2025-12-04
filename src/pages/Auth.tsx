@@ -7,10 +7,10 @@ import TermsModal from '@/components/TermsModal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { toast } from '@/hooks/use-toast';
+import { useCustomToast } from '@/hooks/use-custom-toast';
 import { Eye, EyeOff, LogIn, MessageCircle, HelpCircle } from 'lucide-react';
+import { setAuth, API_URL } from '@/lib/auth';
 
-// Schema de validação
 const loginSchema = z.object({
   email: z.string().trim().min(3, 'Digite seu usuário ou e-mail'),
   password: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres'),
@@ -18,6 +18,7 @@ const loginSchema = z.object({
 
 const Auth = () => {
   const navigate = useNavigate();
+  const toast = useCustomToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +30,6 @@ const Auth = () => {
     e.preventDefault();
     setErrors({});
 
-    // Validação front-end
     const result = loginSchema.safeParse({ email, password });
     if (!result.success) {
       const fieldErrors: { email?: string; password?: string } = {};
@@ -44,7 +44,7 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/login', {
+      const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: email, password }),
@@ -53,36 +53,31 @@ const Auth = () => {
       const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        toast({
-          title: 'Erro no login',
-          description: data.error || 'Credenciais inválidas',
-          variant: 'destructive',
-        });
+        toast.error(
+          'Erro no login',
+          data.error || 'Credenciais inválidas. Verifique seus dados e tente novamente.'
+        );
         return;
       }
 
-      // Sucesso → salva token e dados do usuário
-      localStorage.setItem('token', data.token);
-      
-      // Salva os dados do usuário se disponível
-      if (data.user) {
-        localStorage.setItem('user', JSON.stringify(data.user));
-      }
+      // Salva autenticação
+      setAuth(data.token, data.user);
 
-      toast({
-        title: 'Sucesso',
-        description: 'Login realizado!',
-      });
+      toast.success(
+        'Login realizado com sucesso!',
+        `Bem-vindo de volta, ${data.user.name}!`
+      );
 
-      // ✅ CORRETO - Navega para a rota React
-      navigate('/dashboard', { replace: true });
+      // Pequeno delay para mostrar o toast
+      setTimeout(() => {
+        navigate('/dashboard', { replace: true });
+      }, 800);
 
     } catch (err) {
-      toast({
-        title: 'Erro de conexão',
-        description: 'Não foi possível se conectar ao servidor.',
-        variant: 'destructive',
-      });
+      toast.error(
+        'Erro de conexão',
+        'Não foi possível conectar ao servidor. Verifique sua internet e tente novamente.'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -97,12 +92,10 @@ const Auth = () => {
       <NeuralNetworkBackground />
 
       <div className="relative z-10 w-full max-w-md">
-        {/* Logo */}
         <div className="flex justify-center mb-8">
           <Logo4Track className="scale-125" />
         </div>
 
-        {/* Login Card */}
         <div className="glass-card neon-border p-8">
           <div className="text-center mb-8">
             <h1 className="font-orbitron text-2xl font-bold mb-2">
@@ -114,7 +107,6 @@ const Auth = () => {
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
-            {/* Email */}
             <div className="space-y-2">
               <Label htmlFor="email" className="text-foreground font-medium">E-mail ou Usuário</Label>
               <Input
@@ -129,7 +121,6 @@ const Auth = () => {
               {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
             </div>
 
-            {/* Password */}
             <div className="space-y-2">
               <Label htmlFor="password" className="text-foreground font-medium">Senha</Label>
               <div className="relative">
@@ -153,7 +144,6 @@ const Auth = () => {
               {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
             </div>
 
-            {/* Login Button */}
             <Button type="submit" variant="hero" size="lg" className="w-full btn-scanner" disabled={isLoading}>
               {isLoading ? (
                 <span className="flex items-center gap-2">
@@ -172,7 +162,6 @@ const Auth = () => {
             </Button>
           </form>
 
-          {/* Terms */}
           <p className="text-center text-xs text-muted-foreground mt-6">
             Ao realizar login, você concorda automaticamente com nossos{' '}
             <button
@@ -184,7 +173,6 @@ const Auth = () => {
             </button>.
           </p>
 
-          {/* Divider */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-border/50" />
@@ -194,7 +182,6 @@ const Auth = () => {
             </div>
           </div>
 
-          {/* Support Buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
             <Button type="button" variant="heroSecondary" size="default" className="flex-1" onClick={openWhatsApp}>
               <MessageCircle className="w-4 h-4 mr-2" /> Esqueceu a senha?
@@ -204,7 +191,6 @@ const Auth = () => {
             </Button>
           </div>
 
-          {/* Create Account */}
           <div className="text-center mt-6">
             <p className="text-sm text-muted-foreground">
               Não tem uma conta?{' '}
@@ -215,7 +201,6 @@ const Auth = () => {
           </div>
         </div>
 
-        {/* Back */}
         <div className="text-center mt-6">
           <a href="/" className="text-sm text-muted-foreground hover:text-primary transition-colors">
             ← Voltar para a página inicial
@@ -223,7 +208,6 @@ const Auth = () => {
         </div>
       </div>
 
-      {/* Terms Modal */}
       <TermsModal open={termsOpen} onOpenChange={setTermsOpen} />
     </div>
   );
